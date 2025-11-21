@@ -1,0 +1,30 @@
+# General
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Xcode / iOS
+DerivedData/
+build/
+*.xcuserstate
+**/xcuserdata/
+*.moved-aside
+*.ipa
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# Arduino / ESP32
+*.ino.bin
+*.ino.elf
+*.ino.hex
+*.map
+*.d
+/.pio/
+/.pioenvs/
+/.pioenvs*/
+/.pnp.*
