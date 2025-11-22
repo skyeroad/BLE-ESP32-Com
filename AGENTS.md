@@ -22,3 +22,9 @@
 ## Commit & Pull Request Guidelines
 - Commits: keep messages imperative and scoped (e.g., `Add BLE manager and SwiftUI UI`, `Persist ESP32 value to NVS`). Group related changes together.
 - Pull requests: include a short summary, screenshots for UI changes, and notes on manual verification (device used, steps run). Reference related issues when applicable. Call out any UUID or protocol changes explicitly so mobile/firmware stay aligned.
+
+## Android App (parity with iOS)
+- Project: `BLE-ESP32ComAndroid/` (Android Studio). MinSdk 33 (Android 13). Manifest declares BLE feature plus `BLUETOOTH_SCAN`/`BLUETOOTH_CONNECT`; prompts at runtime.
+- Main screen: status dot/state, scan/disconnect buttons, last value text, input + Write, Read button. Layouts: `app/src/main/res/layout/activity_main.xml`, `content_main.xml`, `drawable/status_dot.xml`.
+- Logic: `app/src/main/java/com/skyeroad/ble_esp32com/MainActivity.kt` — uses `BluetoothLeScanner` with service UUID filter, connects via `BluetoothGatt`, discovers characteristic, enables notifications (CCCD), reads initial value, writes UInt32 little-endian from input (decimal or 0x...). UUIDs match firmware/iOS.
+- Build/run: use a physical device (e.g., Pixel 6a on Android 13+), accept Bluetooth permissions, then Scan → Connect → Read/Write. BLE unavailable on emulator.

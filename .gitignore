@@ -28,3 +28,13 @@ Package.resolved
 /.pioenvs/
 /.pioenvs*/
 /.pnp.*
+
+# Android
+BLE-ESP32ComAndroid/.gradle/
+BLE-ESP32ComAndroid/build/
+BLE-ESP32ComAndroid/app/build/
+BLE-ESP32ComAndroid/.idea/
+BLE-ESP32ComAndroid/local.properties
+BLE-ESP32ComAndroid/*.iml
+BLE-ESP32ComAndroid/*.apk
+BLE-ESP32ComAndroid/*.aab
