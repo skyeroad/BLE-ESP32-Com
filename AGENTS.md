@@ -28,3 +28,5 @@
 - Main screen: status dot/state, scan/disconnect buttons, last value text, input + Write, Read button. Layouts: `app/src/main/res/layout/activity_main.xml`, `content_main.xml`, `drawable/status_dot.xml`.
 - Logic: `app/src/main/java/com/skyeroad/ble_esp32com/MainActivity.kt` — uses `BluetoothLeScanner` with service UUID filter, connects via `BluetoothGatt`, discovers characteristic, enables notifications (CCCD), reads initial value, writes UInt32 little-endian from input (decimal or 0x...). UUIDs match firmware/iOS.
 - Build/run: use a physical device (e.g., Pixel 6a on Android 13+), accept Bluetooth permissions, then Scan → Connect → Read/Write. BLE unavailable on emulator.
+- UI/layout: `CoordinatorLayout` and `AppBarLayout` use `android:fitsSystemWindows="true"` to sit below system bars; content include has `app:layout_behavior="@string/appbar_scrolling_view_behavior"` so toolbar/title sit above the buttons.
+- Android gitignore: root `.gitignore` ignores `BLE-ESP32ComAndroid/.gradle`, build outputs, `.idea`, `local.properties`, IDE metadata, and APK/AAB artifacts.

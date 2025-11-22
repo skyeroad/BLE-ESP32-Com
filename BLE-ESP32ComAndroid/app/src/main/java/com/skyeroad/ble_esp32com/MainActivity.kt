@@ -23,8 +23,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.skyeroad.ble_esp32com.databinding.ActivityMainBinding
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -65,23 +63,6 @@ class MainActivity : AppCompatActivity() {
 
         val manager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = manager.adapter
-
-        // Apply system bar insets so content is not hidden behind status/navigation bars.
-        val contentRoot = binding.contentMain.root
-        val baseLeft = contentRoot.paddingLeft
-        val baseTop = contentRoot.paddingTop
-        val baseRight = contentRoot.paddingRight
-        val baseBottom = contentRoot.paddingBottom
-        ViewCompat.setOnApplyWindowInsetsListener(contentRoot) { view, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(
-                baseLeft + bars.left,
-                baseTop + bars.top,
-                baseRight + bars.right,
-                baseBottom + bars.bottom
-            )
-            insets
-        }
 
         binding.contentMain.scanButton.setOnClickListener { ensurePermissionsAndScan() }
         binding.contentMain.disconnectButton.setOnClickListener { disconnectGatt() }
