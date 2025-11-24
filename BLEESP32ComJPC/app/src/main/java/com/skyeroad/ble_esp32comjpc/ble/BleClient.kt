@@ -14,6 +14,7 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import java.nio.ByteBuffer
@@ -91,15 +92,15 @@ class BleClient(context: Context) {
             updateStatus("Not connected")
             return
         }
-        when (val result: Any? = gatt?.readCharacteristic(c)) {
-            is Int -> if (result != BluetoothStatusCodes.SUCCESS) {
-                updateStatus("Read failed to start ($result)")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val status = gatt?.readCharacteristic(c) ?: BluetoothStatusCodes.ERROR_UNKNOWN
+            if (status != BluetoothStatusCodes.SUCCESS) {
+                updateStatus("Read failed to start ($status)")
             }
-            is Boolean -> if (!result) {
-                updateStatus("Read failed to start")
-            }
-            null -> updateStatus("Read failed to start")
-            else -> updateStatus("Read failed to start")
+        } else {
+            @Suppress("DEPRECATION")
+            val ok = gatt?.readCharacteristic(c) ?: false
+            if (!ok) updateStatus("Read failed to start")
         }
     }
 
@@ -114,18 +115,21 @@ class BleClient(context: Context) {
             return
         }
         val buffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(value)
-        val status = gatt?.writeCharacteristic(
-            c,
-            buffer.array(),
-            BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-        )
-        if (status is Int) {
-            if (status == BluetoothStatusCodes.SUCCESS) updateStatus("Writing $value...")
-            else updateStatus("Write failed to start ($status)")
-        } else if (status is Boolean) {
-            if (status) updateStatus("Writing $value...") else updateStatus("Write failed to start")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val status = gatt?.writeCharacteristic(
+                c,
+                buffer.array(),
+                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            ) ?: BluetoothStatusCodes.ERROR_UNKNOWN
+            if (status == BluetoothStatusCodes.SUCCESS) {
+                updateStatus("Writing $value...")
+            } else {
+                updateStatus("Write failed to start ($status)")
+            }
         } else {
-            updateStatus("Write failed to start")
+            @Suppress("DEPRECATION")
+            val ok = gatt?.writeCharacteristic(c) ?: false
+            if (ok) updateStatus("Writing $value...") else updateStatus("Write failed to start")
         }
     }
 
@@ -207,19 +211,28 @@ class BleClient(context: Context) {
             handler.post { updateStatus("Ready") }
         }
 
-        override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
+            status: Int
+        ) {
             if (status == BluetoothGatt.GATT_SUCCESS && characteristic.uuid == characteristicUuid) {
-                val value = parseUint32(characteristic.value)
-                handler.post { setLastValue(value) }
+                val parsed = parseUint32(value)
+                handler.post { setLastValue(parsed) }
             }
         }
 
-        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray
+        ) {
             if (characteristic.uuid == characteristicUuid) {
-                val value = parseUint32(characteristic.value)
+                val parsed = parseUint32(value)
                 handler.post {
-                    setLastValue(value)
-                    updateStatus("Notification: $value")
+                    setLastValue(parsed)
+                    updateStatus("Notification: $parsed")
                 }
             }
         }
@@ -229,11 +242,18 @@ class BleClient(context: Context) {
         gatt.setCharacteristicNotification(characteristic, true)
         val descriptor = characteristic.getDescriptor(cccdUuid)
         descriptor?.let {
-            val status = gatt.writeDescriptor(it, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
-            if (status is Int && status != BluetoothStatusCodes.SUCCESS) {
-                updateStatus("Enable notify failed ($status)")
-            } else if (status is Boolean && !status) {
-                updateStatus("Enable notify failed")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val status = gatt.writeDescriptor(it, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                if (status != BluetoothStatusCodes.SUCCESS) {
+                    updateStatus("Enable notify failed ($status)")
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                it.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                @Suppress("DEPRECATION")
+                if (!gatt.writeDescriptor(it)) {
+                    updateStatus("Enable notify failed")
+                }
             }
         }
     }
