@@ -8,7 +8,8 @@
 ## Build, Test, and Development Commands
 - iOS: open `BLE-ESPCom/BLE-ESPCom.xcodeproj` and run on a physical device (BLE not available in the simulator). Use Xcode’s Run (⌘R) to build/launch.
 - ESP32 (Arduino IDE): open `esp32-firmware/arduino/BLEMemoryBridge/BLEMemoryBridge.ino`. Select your ESP32 board/port, then **Upload**. Monitor via Serial at 115200 baud.
-- ESP32 (PlatformIO): open `esp32-firmware/platformio/` and build/upload the `esp32dev` env. Monitor via Serial at 115200 baud.
+- ESP32 (PlatformIO): from `esp32-firmware/platformio/`, run `pio run` then `pio run -t upload`. If auto-detect picks the wrong device, pass `--upload-port /dev/cu.usbserial-0001`. Monitor via `pio device monitor -b 115200`.
+- Upload troubleshooting: if PlatformIO can't connect, hold BOOT/IO0 during upload or tap EN/RESET when “Connecting...” appears.
 - Android (Compose): `./gradlew :app:assembleDebug` from `BLEESP32ComJPC/`. Use a physical device; BLE not available on emulator. BLE permissions requested at runtime.
 
 ## Coding Style & Naming Conventions

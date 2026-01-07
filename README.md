@@ -1,8 +1,18 @@
 # BLE ESP32 Comm
 
-A minimal pairing of:
+Cross-platform BLE sample with:
 - A SwiftUI iOS app that scans for an ESP32 peripheral, reads/writes a 32-bit value over BLE, and listens for notifications.
-- An ESP32 firmware project (Arduino IDE + PlatformIO) that exposes a single read/write/notify characteristic with a persisted 32-bit value.
+- An ESP32 firmware project that builds in both Arduino IDE and PlatformIO (shared source).
+- Android clients (Compose + legacy Views) for parity testing.
+
+This is intended as a minimal, public-friendly reference implementation for BLE read/write/notify with persistent state.
+
+## Compatibility
+- Firmware: ESP32 Arduino core 3.x (Arduino IDE) or PlatformIO `espressif32` platform.
+- Clients: iOS physical device (BLE required), Android 13+ physical device (BLE required).
+
+## Known Issues
+- ESP32 upload via PlatformIO can fail to connect; hold BOOT/IO0 or tap EN/RESET when “Connecting...” appears.
 
 ## Project Structure
 - `BLE-ESPCom/` — iOS app. Open `BLE-ESPCom/BLE-ESPCom.xcodeproj` in Xcode. Sources live in `BLE-ESPCom/BLE-ESPCom/` (`ContentView.swift`, `BLEManager.swift`, `BLE_ESPComApp.swift`). Assets in `Assets.xcassets/`.
@@ -24,7 +34,9 @@ A minimal pairing of:
 - **Compose app (recommended):** open `BLEESP32ComJPC/` in Android Studio or run `./gradlew :app:assembleDebug`. Use a physical device (BLE not available on the emulator), MinSdk 33. Main screen mirrors the iOS layout: status dot + state, Scan/Disconnect row, “Last value” card, numeric input + Write/Read buttons. BLE filtering by service UUID; notifications update the last value text.
 - **Legacy views app:** open `BLE-ESP32ComAndroid/` if you need the original XML-based UI. Physical device required; same BLE behavior and UUIDs.
 
-## Flashing the ESP32
+## ESP32 Firmware (Arduino IDE + PlatformIO)
+The firmware is a shared codebase located in `esp32-firmware/shared/` with thin entry points for each build system.
+
 ### Arduino IDE
 1. Open `esp32-firmware/arduino/BLEMemoryBridge/BLEMemoryBridge.ino` in Arduino IDE.
 2. Select your ESP32 board and port, then **Upload**.
@@ -32,7 +44,11 @@ A minimal pairing of:
 
 ### PlatformIO
 1. Open `esp32-firmware/platformio/` in PlatformIO.
-2. Build/upload with env `esp32dev` and monitor at 115200 baud.
+2. Build: `pio run`
+3. Upload: `pio run -t upload`
+4. Serial monitor: `pio device monitor -b 115200`
+
+If upload fails to connect, hold the BOOT/IO0 button while the upload begins or tap EN/RESET when you see “Connecting...”. If PlatformIO picks the wrong port, pass it explicitly, for example: `pio run -t upload --upload-port /dev/cu.usbserial-0001`.
 
 ## Notes
 - Keep UUIDs in sync if you change them in either side.

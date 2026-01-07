@@ -30,8 +30,13 @@ Shared Arduino/PlatformIO firmware that exposes a single read/write BLE characte
 
 ### PlatformIO
 1. Open `platformio/` in VS Code (PlatformIO extension) or use the CLI.
-2. Build/upload with your usual PlatformIO workflow (env: `esp32dev`).
-3. Monitor serial at 115200 baud.
+2. Build: `pio run`
+3. Upload: `pio run -t upload`
+4. If auto-detect selects the wrong device, specify the port: `pio run -t upload --upload-port /dev/cu.usbserial-0001`
+5. Monitor: `pio device monitor -b 115200`
+
+## Troubleshooting
+- If upload fails to connect, hold BOOT/IO0 while the upload begins or tap EN/RESET when “Connecting...” appears.
 
 ## Using it from the iOS app
 - Scan for devices advertising the service UUID above; the peripheral name is `ESP32 Memory Bridge`.
