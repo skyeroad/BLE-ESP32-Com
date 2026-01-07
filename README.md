@@ -10,6 +10,7 @@ Includes:
 Notes:
 - You can only connect one device to the ESP32 at a time. Tap the "Disconnect" button on the currently connected device if you want to try it on a separate device.
 - You can use the legacy Android build, but it's not being maintained or updated. The Jetpack Compose version is.
+- Both Arduino IDE and PlatformIO reference the same .cpp file at [`esp32-firmware/shared/BLEMemoryBridge.cpp`](esp32-firmware/shared/BLEMemoryBridge.cpp)
 
 ## Compatibility
 - Firmware: ESP32 Arduino core 3.x (Arduino IDE) or PlatformIO `espressif32` platform.
