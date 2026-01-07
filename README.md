@@ -1,11 +1,15 @@
 # BLE ESP32 Comm
 
-Cross-platform BLE sample with:
+Cross-platform BLE code example that demonstrates how to connect an iPhone or Android phone to an ESP32 using Bluetooth Low Energy. It shows a simple read/write flow by exchanging a single 32-bit integer and persisting that value on the ESP32 so it survives power cycles.
+
+Includes:
 - A SwiftUI iOS app that scans for an ESP32 peripheral, reads/writes a 32-bit value over BLE, and listens for notifications.
 - An ESP32 firmware project that builds in both Arduino IDE and PlatformIO (shared source).
 - Android clients (Compose + legacy Views) for parity testing.
 
-This is intended as a minimal, public-friendly reference implementation for BLE read/write/notify with persistent state.
+Notes:
+- You can only connect one device to the ESP32 at a time. Tap the "Disconnect" button on the currently connected device if you want to try it on a separate device.
+- You can use the legacy Android build, but it's not being maintained or updated. The Jetpack Compose version is.
 
 ## Compatibility
 - Firmware: ESP32 Arduino core 3.x (Arduino IDE) or PlatformIO `espressif32` platform.
@@ -19,6 +23,18 @@ This is intended as a minimal, public-friendly reference implementation for BLE 
 - `BLE-ESP32ComAndroid/` — Legacy Android (Views). Open in Android Studio. Layouts in `app/src/main/res/layout/` (`activity_main.xml`, `content_main.xml`, `drawable/status_dot.xml`); logic in `app/src/main/java/com/skyeroad/ble_esp32com/MainActivity.kt`.
 - `BLEESP32ComJPC/` — Jetpack Compose Android app (Material 3, iOS-like palette). Entry: `app/src/main/java/com/skyeroad/ble_esp32comjpc/MainActivity.kt`; BLE logic in `ble/BleClient.kt` + `BleViewModel.kt`. MinSdk 33, targetSdk 36. Build with `./gradlew :app:assembleDebug`.
 - `esp32-firmware/` — ESP32 firmware with shared sources for Arduino IDE + PlatformIO. See `esp32-firmware/README.md`.
+
+## Screenshots
+<table>
+  <tr>
+    <th>SwiftUI Screenshot</th>
+    <th>Jetpack Compose Screenshot</th>
+  </tr>
+  <tr>
+    <td><img src="docs/images/swiftui.png" alt="SwiftUI Screenshot" width="320"></td>
+    <td><img src="docs/images/jpc.png" alt="Jetpack Compose Screenshot" width="320"></td>
+  </tr>
+</table>
 
 ## BLE Contract (shared IDs)
 - Service UUID: `d973f2b9-2ed7-4d5b-ad07-4d1974f2c925`
