@@ -2,12 +2,13 @@
 
 ## Project Structure & Module Organization
 - `BLE-ESPCom/` — SwiftUI iOS app. Open `BLE-ESPCom.xcodeproj` in Xcode; main sources in `BLE-ESPCom/BLE-ESPCom/` (e.g., `ContentView.swift`, `BLEManager.swift`, `BLE_ESPComApp.swift`). Assets live in `Assets.xcassets/`.
-- `esp32-firmware/` — Arduino sketch for the ESP32 BLE peripheral. Primary file: `BLEMemoryBridge/BLEMemoryBridge.ino` plus `README.md`.
+- `esp32-firmware/` — ESP32 BLE firmware with shared sources for Arduino IDE + PlatformIO. Shared logic in `shared/BLEMemoryBridge.cpp`; entry points in `arduino/` and `platformio/`.
 - `BLEESP32ComJPC/` — Jetpack Compose Android app (Material 3). Uses Compose BOM + Kotlin Compose plugin; entry at `app/src/main/java/com/skyeroad/ble_esp32comjpc/MainActivity.kt` with BLE logic in `ble/BleClient.kt` and `BleViewModel.kt`. Requires physical device (BLE), minSdk 33, targetSdk 36.
 
 ## Build, Test, and Development Commands
 - iOS: open `BLE-ESPCom/BLE-ESPCom.xcodeproj` and run on a physical device (BLE not available in the simulator). Use Xcode’s Run (⌘R) to build/launch.
-- ESP32: open `esp32-firmware/BLEMemoryBridge/BLEMemoryBridge.ino` in Arduino IDE. Select your ESP32 board/port, then **Upload**. Monitor via Serial at 115200 baud.
+- ESP32 (Arduino IDE): open `esp32-firmware/arduino/BLEMemoryBridge/BLEMemoryBridge.ino`. Select your ESP32 board/port, then **Upload**. Monitor via Serial at 115200 baud.
+- ESP32 (PlatformIO): open `esp32-firmware/platformio/` and build/upload the `esp32dev` env. Monitor via Serial at 115200 baud.
 - Android (Compose): `./gradlew :app:assembleDebug` from `BLEESP32ComJPC/`. Use a physical device; BLE not available on emulator. BLE permissions requested at runtime.
 
 ## Coding Style & Naming Conventions

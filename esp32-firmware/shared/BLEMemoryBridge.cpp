@@ -1,5 +1,5 @@
 // Minimal BLE bridge for read/write access to a 32-bit value in ESP32 memory.
-// Load this sketch in the Arduino IDE with the ESP32 boards package installed.
+// This file is shared by both the Arduino IDE sketch and the PlatformIO project.
 
 #include <Arduino.h>
 #include <BLEDevice.h>
@@ -34,9 +34,9 @@ class ValueCallbacks : public BLECharacteristicCallbacks {
   }
 
   void onWrite(BLECharacteristic *characteristic) override {
-    String incomingStr = characteristic->getValue();
-    size_t len = incomingStr.length();
-    const char *raw = incomingStr.c_str();
+    auto incoming = characteristic->getValue();
+    size_t len = incoming.length();
+    const char *raw = incoming.c_str();
 
     // Accept either a 4-byte little-endian integer or an ASCII decimal string.
     if (len == sizeof(uint32_t)) {

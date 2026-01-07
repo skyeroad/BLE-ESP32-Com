@@ -1,13 +1,16 @@
 # ESP32 BLE Memory Bridge
 
-Minimal Arduino sketch that exposes a single read/write BLE characteristic so the iOS app can read and update a 32-bit value held in ESP32 memory.
+Shared Arduino/PlatformIO firmware that exposes a single read/write BLE characteristic so the iOS app can read and update a 32-bit value held in ESP32 memory.
 
 ## Prerequisites
 - Arduino IDE with the ESP32 boards package installed (Tools → Board → Boards Manager → search for `esp32`).
+- PlatformIO (VS Code extension or CLI) if you want the PlatformIO build.
 - Select your board (e.g., `ESP32 Dev Module`) and the correct serial port before uploading.
 
 ## Files
-- `BLEMemoryBridge/BLEMemoryBridge.ino` — main sketch. Advertising name: `ESP32 Memory Bridge`.
+- `shared/BLEMemoryBridge.cpp` — shared firmware logic (advertising name: `ESP32 Memory Bridge`).
+- `arduino/BLEMemoryBridge/BLEMemoryBridge.ino` — Arduino IDE entry point that includes the shared code.
+- `platformio/` — PlatformIO project that includes the shared code (`esp32dev`, 115200 baud).
 
 ## BLE contract
 - Service UUID: `d973f2b9-2ed7-4d5b-ad07-4d1974f2c925`
@@ -20,9 +23,15 @@ Minimal Arduino sketch that exposes a single read/write BLE characteristic so th
 - Reads return the current value as 4-byte little-endian data.
 
 ## Flashing
-1. Open `BLEMemoryBridge/BLEMemoryBridge.ino` in Arduino IDE.
+### Arduino IDE
+1. Open `arduino/BLEMemoryBridge/BLEMemoryBridge.ino` in Arduino IDE.
 2. Select your ESP32 board and port under **Tools**.
 3. Upload. Open the Serial Monitor at 115200 baud to watch updates when values are written from the app.
+
+### PlatformIO
+1. Open `platformio/` in VS Code (PlatformIO extension) or use the CLI.
+2. Build/upload with your usual PlatformIO workflow (env: `esp32dev`).
+3. Monitor serial at 115200 baud.
 
 ## Using it from the iOS app
 - Scan for devices advertising the service UUID above; the peripheral name is `ESP32 Memory Bridge`.
