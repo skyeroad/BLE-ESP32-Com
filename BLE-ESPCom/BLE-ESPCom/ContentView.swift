@@ -34,7 +34,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
 
                 if let last = manager.lastValue {
-                    Text("Last value: \(last)")
+                    Text("Last value: \(last, format: .number.grouping(.never))")
                         .font(.title3)
                         .bold()
                 } else {

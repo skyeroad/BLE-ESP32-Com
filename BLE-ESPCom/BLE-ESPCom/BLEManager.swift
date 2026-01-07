@@ -72,7 +72,7 @@ final class BLEManager: NSObject, ObservableObject {
             value = UInt32(sanitized)
         }
 
-        guard var toSend = value else {
+        guard let toSend = value else {
             statusMessage = "Invalid number."
             return
         }
