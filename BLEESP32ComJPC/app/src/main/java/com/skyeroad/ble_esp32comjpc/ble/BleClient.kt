@@ -92,15 +92,9 @@ class BleClient(context: Context) {
             updateStatus("Not connected")
             return
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val status = gatt?.readCharacteristic(c) ?: BluetoothStatusCodes.ERROR_UNKNOWN
-            if (status != BluetoothStatusCodes.SUCCESS) {
-                updateStatus("Read failed to start ($status)")
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            val ok = gatt?.readCharacteristic(c) ?: false
-            if (!ok) updateStatus("Read failed to start")
+        val status = gatt?.readCharacteristic(c) ?: BluetoothStatusCodes.ERROR_UNKNOWN
+        if (status != BluetoothStatusCodes.SUCCESS) {
+            updateStatus("Read failed to start ($status)")
         }
     }
 
@@ -115,21 +109,15 @@ class BleClient(context: Context) {
             return
         }
         val buffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(value)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val status = gatt?.writeCharacteristic(
-                c,
-                buffer.array(),
-                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-            ) ?: BluetoothStatusCodes.ERROR_UNKNOWN
-            if (status == BluetoothStatusCodes.SUCCESS) {
-                updateStatus("Writing $value...")
-            } else {
-                updateStatus("Write failed to start ($status)")
-            }
+        val status = gatt?.writeCharacteristic(
+            c,
+            buffer.array(),
+            BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+        ) ?: BluetoothStatusCodes.ERROR_UNKNOWN
+        if (status == BluetoothStatusCodes.SUCCESS) {
+            updateStatus("Writing $value...")
         } else {
-            @Suppress("DEPRECATION")
-            val ok = gatt?.writeCharacteristic(c) ?: false
-            if (ok) updateStatus("Writing $value...") else updateStatus("Write failed to start")
+            updateStatus("Write failed to start ($status)")
         }
     }
 
